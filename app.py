@@ -55,9 +55,9 @@ def init_db():
             (r"**Câu hỏi thực tế:** Để đo khoảng cách từ vị trí $A$ đến gốc cây $B$ bên kia sông, người ta chọn một vị trí $C$ cùng phía với $A$ sao cho $AC = 40\text{ m}$. Tiến hành đo đạc được các góc $\widehat{BAC} = 75^\circ$ và $\widehat{BCA} = 45^\circ$. Khoảng cách $AB$ gần nhất với giá trị nào sau đây?",
                 r"$48,9\text{ m}$",
                 r"$32,7\text{ m}$",
-                r"$28.3\text{ m}$",
-                r"$37.5\text{ m}$",
-                r"$32.7\text{ m}$"),
+                r"$28,3\text{ m}$",
+                r"$37,5\text{ m}$",
+                r"$32,7\text{ m}$"),
         ]
         cursor.executemany("INSERT INTO questions (question, op1, op2, op3, op4, correct_ans) VALUES (?, ?, ?, ?, ?, ?)", sample_questions)
     conn.commit()
@@ -108,7 +108,7 @@ if role == "Học sinh":
             st.warning("Hiện tại chưa có câu hỏi nào trong hệ thống!")
         else:
             st.write("---")
-            st.subheader("BÀI LÀM")
+            st.subheader("BÀI TẬP")
             
             # Tạo form để lưu câu trả lời mà không bị reload trang liên tục
             with st.form(key="quiz_form"):
