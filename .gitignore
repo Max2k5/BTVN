@@ -1,0 +1,10 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Streamlit secrets (Nếu sau này bạn dùng)
+.streamlit/secrets.toml
+
+# Môi trường ảo
+venv/
+.env
