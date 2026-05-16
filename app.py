@@ -127,7 +127,7 @@ else:
     
     # Cơ chế đăng nhập đơn giản
     password = st.text_input("Nhập mật khẩu quản trị:", type="password")
-    if password == "admin123":  # Bạn có thể đổi mật khẩu ở đây
+    if password == st.secrets["admin_password"]:  # Bạn có thể đổi mật khẩu ở đây
         st.success("Đăng nhập thành công!")
         
         tab1, tab2 = st.tabs(["📊 Xem kết quả học sinh", "⚙️ Quản lý câu hỏi"])
