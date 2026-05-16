@@ -71,7 +71,7 @@ def get_db_connection():
 
 # --- GIAO DIỆN CHÍNH ---
 st.set_page_config(page_title="Trắc nghiệm lớp 10", layout="centered")
-st.title("📝 Bài tập về nhà lớp 10")
+st.title("📝 Hệ thống quản lý bài tập về nhà lớp 10")
 
 # Thanh điều hướng bên trái (Sidebar) để chọn vai trò
 role = st.sidebar.selectbox("Bạn là:", ["Học sinh", "Giáo viên (Quản trị)"])
@@ -80,7 +80,7 @@ role = st.sidebar.selectbox("Bạn là:", ["Học sinh", "Giáo viên (Quản tr
 # MÀN HÌNH HỌC SINH
 # ---------------------------------------------------------
 if role == "Học sinh":
-    st.header("✍️ Khu vực làm bài của Học sinh")
+    st.header("✍️ Khu vực dành cho học sinh")
     
     # 1. Nhập thông tin định danh
     col1, col2 = st.columns(2)
