@@ -154,6 +154,19 @@ else:
                 st.dataframe(df_all)
             conn.close()
             
+            st.write("---")
+            st.subheader("🚨 Khu vực dọn dẹp dữ liệu")
+            
+            # Tạo nút bấm xóa toàn bộ lịch sử
+            if st.button("🗑️ Xóa TOÀN BỘ lịch sử làm bài", type="secondary"):
+                conn = get_db_connection()
+                cursor = conn.cursor()
+                cursor.execute("DELETE FROM submissions")  # Lệnh xóa sạch bảng bài nộp
+                conn.commit()
+                conn.close()
+                st.success("Đã xóa sạch toàn bộ lịch sử làm bài của học sinh!")
+                st.rerun()  # Tải lại trang để cập nhật giao diện trống
+            
         with tab2:
             st.subheader("Thêm câu hỏi mới")
             with st.form("add_question_form"):
