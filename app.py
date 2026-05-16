@@ -164,18 +164,49 @@ else:
                 st.dataframe(df_all)
             conn.close()
             
+            # === KHU VỰC QUẢN TRỊ DỮ LIỆU ĐƯỢC PHÂN BIỆT RÕ RÀNG ===
             st.write("---")
-            st.subheader("🚨 Khu vực dọn dẹp dữ liệu")
-            
-            # Tạo nút bấm xóa toàn bộ lịch sử
-            if st.button("🗑️ Xóa TOÀN BỘ lịch sử làm bài", type="secondary"):
-                conn = get_db_connection()
-                cursor = conn.cursor()
-                cursor.execute("DELETE FROM submissions")  # Lệnh xóa sạch bảng bài nộp
-                conn.commit()
-                conn.close()
-                st.success("Đã xóa sạch toàn bộ lịch sử làm bài của học sinh!")
-                st.rerun()  # Tải lại trang để cập nhật giao diện trống
+            st.subheader("⚙️ Khu vực quản trị nâng cao")
+    
+            # ---------------------------------------------------------
+            # PHÂN KHU 1: XÓA ĐIỂM HỌC SINH (Hộp màu vàng cảnh báo nhẹ)
+            # ---------------------------------------------------------
+            with st.expander("📊 PHÂN KHU 1: Xóa lịch sử điểm của học sinh"):
+                st.warning("⚠️ Lưu ý: Hành động này sẽ xóa sạch điểm số của tất cả các lớp. Danh sách câu hỏi vẫn được giữ nguyên.")
+                
+                # Ô xác nhận để mở khóa nút bấm
+                confirm_score = st.checkbox("Tôi chắc chắn muốn xóa TOÀN BỘ điểm số", key="chk_score")
+                
+                # Nút bấm màu xám (Secondary), chỉ bấm được khi đã tích ô ở trên
+                if st.button("🗑️ Xác nhận xóa ĐIỂM", type="secondary", disabled=not confirm_score, use_container_width=True):
+                    conn = get_db_connection()
+                    cursor = conn.cursor()
+                    cursor.execute("DELETE FROM submissions")  # Xóa điểm
+                    conn.commit()
+                    conn.close()
+                    st.success("Đã xóa sạch toàn bộ lịch sử điểm thành công!")
+                    st.rerun()
+    
+            st.write("") # Tạo khoảng cách nhỏ giữa 2 khu vực
+    
+            # ---------------------------------------------------------
+            # PHÂN KHU 2: XÓA CÂU HỎI (Hộp màu đỏ nguy hiểm)
+            # ---------------------------------------------------------
+            with st.expander("🔥 PHÂN KHU 2: Xóa TOÀN BỘ câu hỏi (Để nạp đề mới)"):
+                st.error("🚨 Nguy hiểm: Hành động này sẽ xóa sạch các câu hỏi hiện tại trên web để hệ thống tự động nạp lại danh sách câu hỏi mới từ file code của bạn.")
+                
+                # Ô xác nhận để mở khóa nút bấm
+                confirm_ques = st.checkbox("Tôi chắc chắn muốn xóa TOÀN BỘ câu hỏi", key="chk_ques")
+                
+                # Nút bấm màu đỏ (Primary), chỉ bấm được khi đã tích ô ở trên
+                if st.button("🔴 Xác nhận xóa CÂU HỎI", type="primary", disabled=not confirm_ques, use_container_width=True):
+                    conn = get_db_connection()
+                    cursor = conn.cursor()
+                    cursor.execute("DELETE FROM questions")  # Xóa câu hỏi
+                    conn.commit()
+                    conn.close()
+                    st.success("Đã xóa câu hỏi cũ! Hệ thống đang tải lại đề mới...")
+                    st.rerun()
             
         with tab2:
             st.subheader("Thêm câu hỏi mới")
