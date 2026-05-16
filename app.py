@@ -28,8 +28,18 @@ def init_db():
     cursor.execute("SELECT COUNT(*) FROM questions")
     if cursor.fetchone()[0] == 0:
         sample_questions = [
-            ("Mệnh đề nào sau đây là một mệnh đề chứa biến?", "3 + 2 = 5", "x + 1 > 3", "Hà Nội là thủ đô của VN", "Ngôi nhà này đẹp quá!", "x + 1 > 3"),
-            ("Cho tập hợp A = {1, 2, 3}. Số tập con của A là bao nhiêu?", "3", "6", "8", "9", "8")
+            (r"Cho tam giác ABC có các cạnh BC = a, CA = b, AB = c. Khẳng định nào sau đây là đúng?", 
+             r"$a^2=b^2+c^2-2bc.cos(A)$", 
+             r"$a^2=b^2+c^2+2bc.cos(A)$", 
+             r"$a^2=b^2+c^2-bc.cos(A)$", 
+             r"$b^2=a^2+c^2-2ac.cos(A)$", 
+             r"$a^2=b^2+c^2-2bc.cos(A)$"),
+            (r"Cho tam giác ABC có góc B bằng $60^o$, BC = 8 cm, AB = 5 cm. Tính độ dài cạnh AC.", 
+             r"$AC=8$ cm", 
+             r"$AC=\sqrt{129}$ cm", 
+             r"$AC=7$ cm", 
+             r"$AC=\sqrt{97}$ cm", 
+             r"$AC=7$ cm"),
         ]
         cursor.executemany("INSERT INTO questions (question, op1, op2, op3, op4, correct_ans) VALUES (?, ?, ?, ?, ?, ?)", sample_questions)
     conn.commit()
@@ -42,8 +52,8 @@ def get_db_connection():
     return sqlite3.connect("quiz_data.db")
 
 # --- GIAO DIỆN CHÍNH ---
-st.set_page_config(page_title="Hệ thống Bài tập Trắc nghiệm", layout="centered")
-st.title("📝 Hệ thống Bài tập Trắc nghiệm")
+st.set_page_config(page_title="Trắc nghiệm lớp 10", layout="centered")
+st.title("📝 Bài tập về nhà lớp 10")
 
 # Thanh điều hướng bên trái (Sidebar) để chọn vai trò
 role = st.sidebar.selectbox("Bạn là:", ["Học sinh", "Giáo viên (Quản trị)"])
