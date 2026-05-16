@@ -105,64 +105,64 @@ if role == "Học sinh":
             st.write("👋 Đây là lần đầu tiên bạn làm bài này. Cố lên nhé!")
 
     if df_ques.empty:
-            st.warning("Hiện tại chưa có câu hỏi nào trong hệ thống!")
-        else:
-            st.write("---")
-            st.subheader("BÀI TẬP")
+        st.warning("Hiện tại chưa có câu hỏi nào trong hệ thống!")
+    else:
+        st.write("---")
+        st.subheader("BÀI TẬP")
             
-            # --- BỔ SUNG TRẠNG THÁI NỘP BÀI ---
-            if "submitted" not in st.session_state:
-                st.session_state.submitted = False
+        # --- BỔ SUNG TRẠNG THÁI NỘP BÀI ---
+        if "submitted" not in st.session_state:
+            st.session_state.submitted = False
 
-            # Nếu CHƯA nộp bài thì hiển thị Đề bài và Nút nộp bài
-            if not st.session_state.submitted:
-                # Tạo form để lưu câu trả lời mà không bị reload trang liên tục
-                with st.form(key="quiz_form"):
-                    user_answers = {}
-                    for idx, row in df_ques.iterrows():
-                        st.markdown(f"**Câu {idx+1}: {row['question']}**")
-                        options = [row['op1'], row['op2'], row['op3'], row['op4']]
-                        user_answers[row['id']] = st.radio(f"Chọn đáp án cho câu {idx+1}:", options, key=f"q_{row['id']}", label_visibility="collapsed")
-                        st.write("")
+        # Nếu CHƯA nộp bài thì hiển thị Đề bài và Nút nộp bài
+        if not st.session_state.submitted:
+           # Tạo form để lưu câu trả lời mà không bị reload trang liên tục
+            with st.form(key="quiz_form"):
+                user_answers = {}
+                for idx, row in df_ques.iterrows():
+                    st.markdown(f"**Câu {idx+1}: {row['question']}**")
+                    options = [row['op1'], row['op2'], row['op3'], row['op4']]
+                    user_answers[row['id']] = st.radio(f"Chọn đáp án cho câu {idx+1}:", options, key=f"q_{row['id']}", label_visibility="collapsed")
+                    st.write("")
                     
-                    submit_button = st.form_submit_button(label="🚀 Nộp bài")
+                submit_button = st.form_submit_button(label="🚀 Nộp bài")
                 
-                # Xử lý sau khi nhấn Nộp bài
-                if submit_button:
-                    correct_count = 0
-                    total_questions = len(df_ques)
+            # Xử lý sau khi nhấn Nộp bài
+            if submit_button:
+                correct_count = 0
+                total_questions = len(df_ques)
                     
-                    for idx, row in df_ques.iterrows():
-                        if user_answers[row['id']] == row['correct_ans']:
-                            correct_count += 1
+                for idx, row in df_ques.iterrows():
+                    if user_answers[row['id']] == row['correct_ans']:
+                        correct_count += 1
                     
-                    # Tính điểm hệ 10
-                    score = (correct_count / total_questions) * 10
+                # Tính điểm hệ 10
+                score = (correct_count / total_questions) * 10
                     
-                    # Lưu kết quả vào CSDL
-                    conn = get_db_connection()
-                    cursor = conn.cursor()
-                    cursor.execute("INSERT INTO submissions (student_class, stt, score) VALUES (?, ?, ?)", (student_class, stt, score))
-                    conn.commit()
+                # Lưu kết quả vào CSDL
+                conn = get_db_connection()
+                cursor = conn.cursor()
+                cursor.execute("INSERT INTO submissions (student_class, stt, score) VALUES (?, ?, ?)", (student_class, stt, score))
+                conn.commit()
                     
-                    # Tính lại điểm trung bình mới
-                    df_sub_new = pd.read_sql_query(f"SELECT score FROM submissions WHERE student_class='{student_class}' AND stt={stt}", conn)
-                    conn.close()
+                # Tính lại điểm trung bình mới
+                df_sub_new = pd.read_sql_query(f"SELECT score FROM submissions WHERE student_class='{student_class}' AND stt={stt}", conn)
+                conn.close()
                     
-                    # Lưu kết quả vào session_state để hiển thị sau khi ẩn form
-                    st.session_state.score = score
-                    st.session_state.avg_score = df_sub_new['score'].mean()
-                    st.session_state.submitted = True
+                # Lưu kết quả vào session_state để hiển thị sau khi ẩn form
+                st.session_state.score = score
+                st.session_state.avg_score = df_sub_new['score'].mean()
+                st.session_state.submitted = True
                     
-                    # Rerun để ẩn form và nút nộp ngay lập tức
-                    st.rerun()
+                # Rerun để ẩn form và nút nộp ngay lập tức
+                st.rerun()
             
-            # Nếu ĐÃ nộp bài thì ẩn form và hiển thị kết quả kèm thông báo
-            else:
-                st.success(f"🎉 Bạn đã nộp bài thành công!")
-                st.metric(label="Điểm lần này", value=f"{st.session_state.score:.2f} / 10")
-                st.metric(label="Điểm trung bình mới", value=f"{st.session_state.avg_score:.2f} / 10")
-                st.warning("🔄 Form bài tập đã khóa và nút Nộp bài đã ẩn. Vui lòng tải lại trang (F5) nếu muốn làm lại bài.")
+        # Nếu ĐÃ nộp bài thì ẩn form và hiển thị kết quả kèm thông báo
+        else:
+            st.success(f"🎉 Bạn đã nộp bài thành công!")
+            st.metric(label="Điểm lần này", value=f"{st.session_state.score:.2f} / 10")
+            st.metric(label="Điểm trung bình mới", value=f"{st.session_state.avg_score:.2f} / 10")
+            st.warning("🔄 Form bài tập đã khóa và nút Nộp bài đã ẩn. Vui lòng tải lại trang (F5) nếu muốn làm lại bài.")
 
 # ---------------------------------------------------------
 # MÀN HÌNH GIÁO VIÊN
